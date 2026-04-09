@@ -1,0 +1,21 @@
+{
+  "name": "jelly-pet",
+  "version": "0.1.0",
+  "description": "Virtual pet companion for Claude Code — grows with your coding sessions",
+  "author": "ejlee-0924",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ejlee-0924/jelly-pet.git"
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "pet",
+    "gamification",
+    "companion"
+  ],
+  "scripts": {
+    "test": "node test/run.js"
+  }
+}

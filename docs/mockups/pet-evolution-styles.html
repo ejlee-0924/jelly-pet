@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelly Pet — Evolution Style Options</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    background: #0d1117; color: #c9d1d9; min-height: 100vh; padding: 24px;
+  }
+  h1 { text-align: center; font-size: 20px; color: #58a6ff; margin-bottom: 4px; }
+  .subtitle { text-align: center; font-size: 13px; color: #8b949e; margin-bottom: 32px; }
+
+  /* Style card */
+  .style-card {
+    max-width: 820px; margin: 0 auto 28px; background: #161b22;
+    border: 1px solid #30363d; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .style-header {
+    padding: 14px 20px; background: #1c2128; border-bottom: 1px solid #30363d;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .style-name { font-size: 15px; color: #58a6ff; }
+  .style-desc { font-size: 12px; color: #8b949e; }
+  .style-vote {
+    padding: 6px 16px; border: 1px solid #30363d; border-radius: 6px;
+    background: #161b22; color: #8b949e; cursor: pointer;
+    font-family: inherit; font-size: 12px; transition: all 0.2s;
+  }
+  .style-vote:hover { border-color: #f0883e; color: #f0883e; transform: translateY(-1px); }
+  .style-vote.picked { background: #f0883e; border-color: #f0883e; color: #fff; }
+
+  /* Evolution strip */
+  .evo-strip {
+    display: flex; padding: 20px; gap: 0; justify-content: space-around;
+  }
+  .evo-stage {
+    display: flex; flex-direction: column; align-items: center; flex: 1;
+    position: relative;
+  }
+  .evo-stage:not(:last-child)::after {
+    content: '→'; position: absolute; right: -8px; top: 30px;
+    color: #30363d; font-size: 16px;
+  }
+  .stage-label { font-size: 11px; color: #8b949e; margin-bottom: 8px; text-align: center; }
+  .stage-art {
+    white-space: pre; font-size: 12px; line-height: 1.25; color: #f0883e;
+    text-align: center; min-height: 60px; display: flex; align-items: center;
+  }
+  .stage-jelly { font-size: 10px; color: #484f58; margin-top: 6px; }
+
+  .elder-color { color: #ff6b6b; }
+  .legend-color { color: #ffd700; text-shadow: 0 0 6px #ffd70044; }
+  .sparkle { animation: sparkle 1.5s ease-in-out infinite alternate; }
+  @keyframes sparkle { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 8px #ffd700aa; } }
+
+  /* Statusline preview */
+  .sl-preview {
+    padding: 12px 20px; background: #1c2128; border-top: 1px solid #30363d;
+    font-size: 12px; color: #8b949e;
+  }
+  .sl-preview-label { font-size: 10px; color: #484f58; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .sl-preview-row {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .sl-pet { color: #f0883e; white-space: pre; line-height: 1.25; font-size: 12px; }
+  .sl-info-text { color: #8b949e; font-size: 12px; }
+  .sl-model { color: #58a6ff; }
+  .sl-bar { color: #3fb950; letter-spacing: -1px; }
+  .sl-bar-empty { color: #30363d; letter-spacing: -1px; }
+
+  /* Result */
+  .result {
+    max-width: 820px; margin: 8px auto 32px; text-align: center;
+    font-size: 14px; color: #3fb950; min-height: 24px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🍬 젤리펫 — 진화 스타일 비교</h1>
+<p class="subtitle">알에서 시작해서 점점 자라나는 5가지 스타일. 마음에 드는 걸 골라주세요!</p>
+
+<!-- ===== Style A: 둥근 성장 ===== -->
+<div class="style-card">
+  <div class="style-header">
+    <div>
+      <div class="style-name">Style A — 둥근 성장</div>
+      <div class="style-desc">알 → 금 가고 → 눈 뜨고 → 팔다리 → 날개</div>
+    </div>
+    <button class="style-vote" onclick="vote('A', this)">이거!</button>
+  </div>
+  <div class="evo-strip">
+    <div class="evo-stage">
+      <div class="stage-label">🥚 Egg</div>
+      <div class="stage-art"><pre>
+ ____
+/    \
+| .. |
+\____/</pre></div>
+      <div class="stage-jelly">0</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐣 Baby</div>
+      <div class="stage-art"><pre>
+ _/\_
+/ .. \
+| \/ |
+\____/</pre></div>
+      <div class="stage-jelly">1K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🦊 Pro</div>
+      <div class="stage-art"><pre>
+ /\  /\
+( ^..^ )
+ )    (
+(______)
+</pre></div>
+      <div class="stage-jelly">5K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐉 Master</div>
+      <div class="stage-art elder-color"><pre>
+ /\  /\
+( ◆◆ )~
+ )    (
+(______)</pre></div>
+      <div class="stage-jelly">10K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">✨ Legend</div>
+      <div class="stage-art legend-color sparkle"><pre>
+*/\  /\*
+( ★★ )~
+*)    (*
+*______*</pre></div>
+      <div class="stage-jelly">50K</div>
+    </div>
+  </div>
+  <div class="sl-preview">
+    <div class="sl-preview-label">▼ Pro 단계 상태줄 미리보기</div>
+    <div class="sl-preview-row">
+      <div class="sl-pet"> /\  /\
+( ^..^ )
+ )    (
+(______)</div>
+      <div>
+        <div><span class="sl-model">Opus 4.6</span> <span class="sl-bar">████████████████</span><span class="sl-bar-empty">░░░░</span> 78%</div>
+        <div class="sl-info-text" style="margin-top:2px;"><span style="color:#f0883e;">🍬 8,420</span> Lv.9 🦊 Pro <span style="color:#f97316;">🔥7일 x1.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Style B: 알 깨기 ===== -->
+<div class="style-card">
+  <div class="style-header">
+    <div>
+      <div class="style-name">Style B — 알 깨기</div>
+      <div class="style-desc">밀봉 알 → 금 → 머리 나옴 → 몸통 → 완전체</div>
+    </div>
+    <button class="style-vote" onclick="vote('B', this)">이거!</button>
+  </div>
+  <div class="evo-strip">
+    <div class="evo-stage">
+      <div class="stage-label">🥚 Egg</div>
+      <div class="stage-art"><pre>
+  .--.
+ /    \
+|      |
+ '----'</pre></div>
+      <div class="stage-jelly">0</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐣 Baby</div>
+      <div class="stage-art"><pre>
+  (oo)
+ /|--|\
+|      |
+ '----'</pre></div>
+      <div class="stage-jelly">1K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🦊 Pro</div>
+      <div class="stage-art"><pre>
+  /oo\
+ /|--|\
+/ |  | \
+'--''--'</pre></div>
+      <div class="stage-jelly">5K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐉 Master</div>
+      <div class="stage-art elder-color"><pre>
+^ /◆◆\ ^
+ /|--|\
+/ |  | \
+'--''--'</pre></div>
+      <div class="stage-jelly">10K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">✨ Legend</div>
+      <div class="stage-art legend-color sparkle"><pre>
+* /★★\ *
+ /|--|\
+* |  | *
+*--**--*</pre></div>
+      <div class="stage-jelly">50K</div>
+    </div>
+  </div>
+  <div class="sl-preview">
+    <div class="sl-preview-label">▼ Pro 단계 상태줄 미리보기</div>
+    <div class="sl-preview-row">
+      <div class="sl-pet">  /oo\
+ /|--|\
+/ |  | \
+'--''--'</div>
+      <div>
+        <div><span class="sl-model">Opus 4.6</span> <span class="sl-bar">████████████████</span><span class="sl-bar-empty">░░░░</span> 78%</div>
+        <div class="sl-info-text" style="margin-top:2px;"><span style="color:#f0883e;">🍬 8,420</span> Lv.9 🦊 Pro <span style="color:#f97316;">🔥7일 x1.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Style C: 젤리 슬라임 ===== -->
+<div class="style-card">
+  <div class="style-header">
+    <div>
+      <div class="style-name">Style C — 젤리 슬라임</div>
+      <div class="style-desc">물방울 젤리 → 눈 → 팔 → 왕관 → 빛나는 왕</div>
+    </div>
+    <button class="style-vote" onclick="vote('C', this)">이거!</button>
+  </div>
+  <div class="evo-strip">
+    <div class="evo-stage">
+      <div class="stage-label">🥚 Egg</div>
+      <div class="stage-art"><pre>
+   __
+  /  \
+ |    |
+  \__/</pre></div>
+      <div class="stage-jelly">0</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐣 Baby</div>
+      <div class="stage-art"><pre>
+   __
+  /° °\
+ |  u  |
+  \__/</pre></div>
+      <div class="stage-jelly">1K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🦊 Pro</div>
+      <div class="stage-art"><pre>
+   __
+o /^ ^\o
+ | \_/ |
+  \__/</pre></div>
+      <div class="stage-jelly">5K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐉 Master</div>
+      <div class="stage-art elder-color"><pre>
+  _/\_
+o /◆ ◆\o
+ | \_/ |
+  \~~/ </pre></div>
+      <div class="stage-jelly">10K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">✨ Legend</div>
+      <div class="stage-art legend-color sparkle"><pre>
+ *_/\_*
+o /★ ★\o
+ | \_/ |
+ *\~~/*</pre></div>
+      <div class="stage-jelly">50K</div>
+    </div>
+  </div>
+  <div class="sl-preview">
+    <div class="sl-preview-label">▼ Pro 단계 상태줄 미리보기</div>
+    <div class="sl-preview-row">
+      <div class="sl-pet">   __
+o /^ ^\o
+ | \_/ |
+  \__/</div>
+      <div>
+        <div><span class="sl-model">Opus 4.6</span> <span class="sl-bar">████████████████</span><span class="sl-bar-empty">░░░░</span> 78%</div>
+        <div class="sl-info-text" style="margin-top:2px;"><span style="color:#f0883e;">🍬 8,420</span> Lv.9 🦊 Pro <span style="color:#f97316;">🔥7일 x1.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Style D: 고양이 성장 ===== -->
+<div class="style-card">
+  <div class="style-header">
+    <div>
+      <div class="style-name">Style D — 고양이 성장</div>
+      <div class="style-desc">알 → 귀 삐침 → 고양이 → 호랑이 → 신수</div>
+    </div>
+    <button class="style-vote" onclick="vote('D', this)">이거!</button>
+  </div>
+  <div class="evo-strip">
+    <div class="evo-stage">
+      <div class="stage-label">🥚 Egg</div>
+      <div class="stage-art"><pre>
+  .--.
+ ( .. )
+ ( -- )
+  '--'</pre></div>
+      <div class="stage-jelly">0</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐣 Baby</div>
+      <div class="stage-art"><pre>
+  /\ /\
+ ( o.o )
+  > ^ <
+  '---'</pre></div>
+      <div class="stage-jelly">1K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🦊 Pro</div>
+      <div class="stage-art"><pre>
+ /\_/\
+(=^.^=)
+ )   ( ~
+(_____)
+</pre></div>
+      <div class="stage-jelly">5K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐉 Master</div>
+      <div class="stage-art elder-color"><pre>
+ /\=/\
+(=◆.◆=)
+ )   ( ~
+(_____)
+</pre></div>
+      <div class="stage-jelly">10K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">✨ Legend</div>
+      <div class="stage-art legend-color sparkle"><pre>
+*/\=/\*
+(=★.★=)
+*)   (*~
+*_____*</pre></div>
+      <div class="stage-jelly">50K</div>
+    </div>
+  </div>
+  <div class="sl-preview">
+    <div class="sl-preview-label">▼ Pro 단계 상태줄 미리보기</div>
+    <div class="sl-preview-row">
+      <div class="sl-pet"> /\_/\
+(=^.^=)
+ )   ( ~
+(_____)</div>
+      <div>
+        <div><span class="sl-model">Opus 4.6</span> <span class="sl-bar">████████████████</span><span class="sl-bar-empty">░░░░</span> 78%</div>
+        <div class="sl-info-text" style="margin-top:2px;"><span style="color:#f0883e;">🍬 8,420</span> Lv.9 🦊 Pro <span style="color:#f97316;">🔥7일 x1.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Style E: 미니멀 변신 ===== -->
+<div class="style-card">
+  <div class="style-header">
+    <div>
+      <div class="style-name">Style E — 미니멀 변신</div>
+      <div class="style-desc">점 → 눈 → 얼굴 → 뿔 → 왕관+별</div>
+    </div>
+    <button class="style-vote" onclick="vote('E', this)">이거!</button>
+  </div>
+  <div class="evo-strip">
+    <div class="evo-stage">
+      <div class="stage-label">🥚 Egg</div>
+      <div class="stage-art"><pre>
+ .~~.
+( :: )
+( :: )
+ '~~'</pre></div>
+      <div class="stage-jelly">0</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐣 Baby</div>
+      <div class="stage-art"><pre>
+ .~~.
+( °° )
+( \/ )
+ '~~'</pre></div>
+      <div class="stage-jelly">1K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🦊 Pro</div>
+      <div class="stage-art"><pre>
+ .~~.
+( ^^ )~
+( \/ )
+ '~~'</pre></div>
+      <div class="stage-jelly">5K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">🐉 Master</div>
+      <div class="stage-art elder-color"><pre>
+/\.~~./\
+( ◆◆ )~
+( \/ )
+ '~~'</pre></div>
+      <div class="stage-jelly">10K</div>
+    </div>
+    <div class="evo-stage">
+      <div class="stage-label">✨ Legend</div>
+      <div class="stage-art legend-color sparkle"><pre>
+*\.~~./*
+( ★★ )~
+( \/ )
+*'~~'*</pre></div>
+      <div class="stage-jelly">50K</div>
+    </div>
+  </div>
+  <div class="sl-preview">
+    <div class="sl-preview-label">▼ Pro 단계 상태줄 미리보기</div>
+    <div class="sl-preview-row">
+      <div class="sl-pet"> .~~.
+( ^^ )~
+( \/ )
+ '~~'</div>
+      <div>
+        <div><span class="sl-model">Opus 4.6</span> <span class="sl-bar">████████████████</span><span class="sl-bar-empty">░░░░</span> 78%</div>
+        <div class="sl-info-text" style="margin-top:2px;"><span style="color:#f0883e;">🍬 8,420</span> Lv.9 🦊 Pro <span style="color:#f97316;">🔥7일 x1.5</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="result" id="result"></div>
+
+<script>
+function vote(style, btn) {
+  document.querySelectorAll('.style-vote').forEach(b => b.classList.remove('picked'));
+  btn.classList.add('picked');
+  const names = {
+    A: 'Style A — 둥근 성장',
+    B: 'Style B — 알 깨기',
+    C: 'Style C — 젤리 슬라임',
+    D: 'Style D — 고양이 성장',
+    E: 'Style E — 미니멀 변신'
+  };
+  document.getElementById('result').textContent = '✅ ' + names[style] + ' 선택!';
+}
+</script>
+</body>
+</html>
