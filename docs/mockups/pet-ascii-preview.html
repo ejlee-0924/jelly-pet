@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelly Pet — All 25 ASCII Arts</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+    background: #0d1117; color: #c9d1d9; min-height: 100vh; padding: 24px;
+  }
+  h1 { text-align: center; font-size: 20px; color: #58a6ff; margin-bottom: 4px; }
+  .subtitle { text-align: center; font-size: 13px; color: #8b949e; margin-bottom: 32px; }
+
+  /* Species tabs */
+  .tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab {
+    padding: 8px 18px; border: 1px solid #30363d; border-radius: 8px;
+    background: #161b22; color: #8b949e; cursor: pointer;
+    font-family: inherit; font-size: 13px; transition: all 0.2s;
+  }
+  .tab:hover { border-color: #58a6ff; color: #c9d1d9; }
+  .tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+  /* Evolution strip */
+  .species-section { display: none; }
+  .species-section.active { display: block; }
+
+  .evo-strip {
+    max-width: 900px; margin: 0 auto;
+    display: flex; gap: 0; justify-content: space-around;
+  }
+  .evo-stage {
+    display: flex; flex-direction: column; align-items: center; flex: 1;
+    position: relative; padding: 0 8px;
+  }
+  .evo-stage:not(:last-child)::after {
+    content: '→'; position: absolute; right: -8px; top: 50px;
+    color: #30363d; font-size: 18px;
+  }
+  .stage-label { font-size: 12px; color: #8b949e; margin-bottom: 8px; text-align: center; }
+  .stage-jelly { font-size: 10px; color: #484f58; margin-bottom: 6px; }
+  .stage-art {
+    white-space: pre; font-size: 13px; line-height: 1.3; color: #f0883e;
+    text-align: center; background: #1c2128; border: 1px solid #30363d;
+    border-radius: 8px; padding: 12px 16px; min-width: 130px;
+    min-height: 80px; display: flex; align-items: center; justify-content: center;
+  }
+  .stage-greeting {
+    font-size: 11px; color: #8b949e; margin-top: 8px; text-align: center;
+    max-width: 140px; line-height: 1.4;
+  }
+
+  .color-red { color: #ff6b6b; }
+  .color-gold { color: #ffd700; text-shadow: 0 0 6px #ffd70044; }
+  .color-gray { color: #6e7681; }
+  .sparkle { animation: sparkle 1.5s ease-in-out infinite alternate; }
+  @keyframes sparkle { 0% { opacity: 0.7; } 100% { opacity: 1; text-shadow: 0 0 8px #ffd700aa; } }
+
+  /* Statusline preview */
+  .sl-section {
+    max-width: 900px; margin: 28px auto 0;
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    overflow: hidden;
+  }
+  .sl-header {
+    padding: 10px 16px; background: #1c2128; border-bottom: 1px solid #30363d;
+    font-size: 12px; color: #484f58; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .sl-body { padding: 12px 16px; display: flex; align-items: center; gap: 20px; }
+  .sl-pet { color: #f0883e; white-space: pre; font-size: 12px; line-height: 1.25; }
+  .sl-info { font-size: 12px; }
+  .sl-row { display: flex; gap: 10px; margin-bottom: 3px; white-space: nowrap; }
+  .sl-model { color: #58a6ff; }
+  .sl-bar { color: #3fb950; letter-spacing: -1px; }
+  .sl-bar-empty { color: #30363d; letter-spacing: -1px; }
+  .sl-jelly { color: #f0883e; }
+  .sl-streak { color: #f97316; }
+
+  /* Stage selector for statusline */
+  .sl-tabs { display: flex; gap: 4px; margin: 12px 16px 0; }
+  .sl-tab {
+    padding: 4px 10px; border: 1px solid #30363d; border-radius: 4px;
+    background: #0d1117; color: #8b949e; cursor: pointer;
+    font-family: inherit; font-size: 11px; transition: all 0.15s;
+  }
+  .sl-tab:hover { border-color: #f0883e; color: #f0883e; }
+  .sl-tab.active { background: #f0883e33; border-color: #f0883e; color: #f0883e; }
+</style>
+</head>
+<body>
+
+<h1>🍬 Jelly Pet — 전체 ASCII 아트 미리보기</h1>
+<p class="subtitle">5종 x 5단계 = 25개 아트 + 상태줄 프리뷰</p>
+
+<div class="tabs" id="species-tabs"></div>
+<div id="species-sections"></div>
+
+<script>
+const data = {
+  shared: {
+    egg: {
+      art: ["  .--.", " ( .. )", " ( -- )", "  '--'"],
+      greeting: "... 뭔가 꿈틀거려요.",
+      color: "gray"
+    }
+  },
+  species: {
+    cat: {
+      name: "고양이", emoji: "🐱",
+      stages: {
+        baby:   { art: ["  /\\ /\\", " ( o.o )", "  > ^ <", "  '---'"], greeting: "냐옹~ 젤리 줘!", color: "default" },
+        pro:    { art: [" /\\_/\\", "(=^.^=)", " )   ( ~", "(_____)"], greeting: "코드 냄새 좋군. 같이 리팩토링하자!", color: "default" },
+        master: { art: [" /\\=/\\", "(=◆.◆=)", " )   ( ~", "(_____)"], greeting: "흠... 만 젤리 먹으며 깨달은 게 있지.", color: "red" },
+        legend: { art: ["*/\\=/\\*", "(=★.★=)", "*)   (*~", "*_____*"], greeting: "젤리의 끝을 보았다. 이제 우리는 하나.", color: "gold" }
+      }
+    },
+    dog: {
+      name: "강아지", emoji: "🐶",
+      stages: {
+        baby:   { art: ["   /\\  ", " ( o.o)__", "  /    \\|", "  '----'"], greeting: "멍멍! 오늘도 신나게!", color: "default" },
+        pro:    { art: [" __/ \\__", "(= o.o =)", "  \\ ~ / ~", "  (___)"], greeting: "꼬리 흔들 중... 코딩 가자!", color: "default" },
+        master: { art: [" _\\/ \\/_", "(= ◆.◆ =)", "  \\ ~ / ~", "  (___)"], greeting: "충성! 이 아키텍처는 내가 지킨다.", color: "red" },
+        legend: { art: ["*_\\/ \\/_*", "(= ★.★ =)", " * ~ * ~", " *(___)*"], greeting: "전설의 도그... 모든 버그를 물어뜯겠다.", color: "gold" }
+      }
+    },
+    hamster: {
+      name: "햄스터", emoji: "🐹",
+      stages: {
+        baby:   { art: ["  .~~.", " (o.o )", " ( >> )", "  '~~'"], greeting: "찍찍! 볼에 젤리 넣을래!", color: "default" },
+        pro:    { art: ["  .~~.", " (^.^ ))", " ( >> )", "  '~~'"], greeting: "볼주머니 가득~ 코딩 간식 최고!", color: "default" },
+        master: { art: ["  .~~.", " (◆.◆ ))", " ( >> )", "  '~~'"], greeting: "이 볼주머니엔 만 젤리의 지혜가...", color: "red" },
+        legend: { art: [" *.~~.*", " (★.★ ))", " (* > *)", "  *~~*"], greeting: "전설의 햄스터... 볼에 우주를 담았다.", color: "gold" }
+      }
+    },
+    rabbit: {
+      name: "토끼", emoji: "🐰",
+      stages: {
+        baby:   { art: [" (\\ /)", " ( o.o)", "  c(\" )", "   ||"], greeting: "깡총! 젤리 어디 있어?", color: "default" },
+        pro:    { art: [" (\\  /)", " ( ^.^)", " o(\" )o", "   ||"], greeting: "당근보다 젤리가 좋아! 코딩하자!", color: "default" },
+        master: { art: [" (\\= /)", " ( ◆.◆)", " o(\" )o", "   ||"], greeting: "이 귀로 버그 소리가 들린다...", color: "red" },
+        legend: { art: ["*(\\= /)*", " ( ★.★)", " *(\" )*", "  *||*"], greeting: "달을 넘어선 토끼... 젤리의 전설.", color: "gold" }
+      }
+    },
+    hedgehog: {
+      name: "고슴도치", emoji: "🦔",
+      stages: {
+        baby:   { art: [" /\\/\\/\\", "( o.o  )", " \\ -- /", "  '--'"], greeting: "찌릿! 가시 조심... 젤리 줘!", color: "default" },
+        pro:    { art: [" /\\/\\/\\", "( ^.^  )", " \\=  =/", "  '=--'"], greeting: "가시 세우고 코딩 돌입!", color: "default" },
+        master: { art: [" /\\/\\/\\", "( ◆.◆  )", " \\=  =/", "  '=--'"], greeting: "만 젤리의 가시... 이제 방어력 만렙.", color: "red" },
+        legend: { art: ["*/\\/\\/\\*", "( ★.★  )", " *=  =*", " *'=--'*"], greeting: "전설의 가시... 빛나는 갑옷을 두르다.", color: "gold" }
+      }
+    }
+  }
+};
+
+const stageNames = { egg: "🥚 Egg", baby: "🐣 Baby", pro: "🦊 Pro", master: "🐉 Master", legend: "✨ Legend" };
+const jellyReq = { egg: "0", baby: "100", pro: "500", master: "2K", legend: "10K" };
+const stageOrder = ["egg", "baby", "pro", "master", "legend"];
+const speciesKeys = Object.keys(data.species);
+
+// Build tabs
+const tabsEl = document.getElementById('species-tabs');
+speciesKeys.forEach((key, i) => {
+  const sp = data.species[key];
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (i === 0 ? ' active' : '');
+  btn.textContent = sp.emoji + ' ' + sp.name;
+  btn.onclick = () => showSpecies(key);
+  tabsEl.appendChild(btn);
+});
+
+// Build sections
+const sectionsEl = document.getElementById('species-sections');
+speciesKeys.forEach((key, i) => {
+  const sp = data.species[key];
+  const section = document.createElement('div');
+  section.className = 'species-section' + (i === 0 ? ' active' : '');
+  section.id = 'species-' + key;
+
+  // Evolution strip
+  let stripHTML = '<div class="evo-strip">';
+  stageOrder.forEach((stage, si) => {
+    const stageData = stage === 'egg' ? data.shared.egg : sp.stages[stage];
+    const colorClass = stageData.color === 'red' ? 'color-red' : stageData.color === 'gold' ? 'color-gold sparkle' : stageData.color === 'gray' ? 'color-gray' : '';
+    stripHTML += `
+      <div class="evo-stage">
+        <div class="stage-label">${stageNames[stage]}</div>
+        <div class="stage-jelly">🍬 ${jellyReq[stage]}</div>
+        <div class="stage-art ${colorClass}">${stageData.art.join('\n')}</div>
+        <div class="stage-greeting">"${stageData.greeting}"</div>
+      </div>`;
+  });
+  stripHTML += '</div>';
+
+  // Statusline preview
+  let slHTML = `
+    <div class="sl-section">
+      <div class="sl-header">▼ 상태줄 미리보기</div>
+      <div class="sl-tabs" id="sl-tabs-${key}">
+        ${stageOrder.map((s, si) => `<button class="sl-tab${si===2?' active':''}" onclick="showSL('${key}','${s}',this)">${stageNames[s]}</button>`).join('')}
+      </div>
+      <div class="sl-body" id="sl-body-${key}">
+      </div>
+    </div>`;
+
+  section.innerHTML = stripHTML + slHTML;
+  sectionsEl.appendChild(section);
+
+  // Init statusline to Pro
+  setTimeout(() => showSL(key, 'pro', null), 0);
+});
+
+function showSpecies(key) {
+  document.querySelectorAll('.species-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#species-tabs .tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('species-' + key).classList.add('active');
+  const idx = speciesKeys.indexOf(key);
+  document.querySelectorAll('#species-tabs .tab')[idx].classList.add('active');
+}
+
+function showSL(species, stage, btn) {
+  if (btn) {
+    document.querySelectorAll(`#sl-tabs-${species} .sl-tab`).forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const stageData = stage === 'egg' ? data.shared.egg : data.species[species].stages[stage];
+  const colorClass = stageData.color === 'red' ? 'color-red' : stageData.color === 'gold' ? 'color-gold sparkle' : stageData.color === 'gray' ? 'color-gray' : '';
+  const jellyMap = { egg: '42', baby: '247', pro: '1,420', master: '5,200', legend: '12.8K' };
+  const lvMap = { egg: '1', baby: '5', pro: '9', master: '15', legend: '20' };
+  const streakMap = { egg: '', baby: '🔥3일', pro: '🔥7일 x1.5', master: '🔥14일 x2.0', legend: '🔥30일 x2.0' };
+  const barMap = { egg: ['████','░░░░░░░░░░░░░░░░','22'], baby: ['████████','░░░░░░░░░░░░','42'], pro: ['████████████████','░░░░','78'], master: ['██████████████████','░░','91'], legend: ['██████████████████','░░','88'] };
+
+  const body = document.getElementById(`sl-body-${species}`);
+  body.innerHTML = `
+    <div class="sl-pet ${colorClass}">${stageData.art.join('\n')}</div>
+    <div class="sl-info">
+      <div class="sl-row">
+        <span class="sl-model">Opus 4.6</span>
+        <span><span class="sl-bar">${barMap[stage][0]}</span><span class="sl-bar-empty">${barMap[stage][1]}</span> ${barMap[stage][2]}%</span>
+      </div>
+      <div class="sl-row">
+        <span class="${colorClass || 'sl-jelly'}">🍬 ${jellyMap[stage]}</span>
+        <span class="${colorClass || ''}">Lv.${lvMap[stage]} ${stageNames[stage]}</span>
+        ${streakMap[stage] ? `<span class="sl-streak">${streakMap[stage]}</span>` : ''}
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>
