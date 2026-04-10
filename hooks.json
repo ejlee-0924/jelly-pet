@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$PLUGIN_DIR/hooks/session-start.js\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$PLUGIN_DIR/hooks/session-end.js\"",
+            "timeout": 10000
+          }
+        ]
+      }
+    ]
+  }
+}

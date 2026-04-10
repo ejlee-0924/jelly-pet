@@ -1,6 +1,5 @@
 ---
-name: rename
-description: Rename your pet
+description: Give your jelly pet a new name
 ---
 
 # Rename Pet
@@ -15,7 +14,7 @@ Give your pet a new name.
 2. Update the state:
 ```bash
 node -e "
-const { renamePet } = require('/Users/ga/work/jelly-pet/lib/state');
+const { renamePet } = require('$PLUGIN_DIR/lib/state');
 renamePet('NEW_NAME');
 console.log('Done');
 "
@@ -24,7 +23,7 @@ Replace NEW_NAME with the user's input.
 
 3. Show the updated pet:
 ```bash
-node /Users/ga/work/jelly-pet/hooks/session-start.js
+node "$PLUGIN_DIR/hooks/session-start.js"
 ```
 
 4. Confirm: "[NEW_NAME](으)로 이름을 바꿨어요!"

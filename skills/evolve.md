@@ -1,6 +1,5 @@
 ---
-name: evolve
-description: Show evolution tree and progress for current pet
+description: Show your pet's full evolution tree and progress to next stage
 ---
 
 # Evolution Tree
@@ -17,9 +16,9 @@ cat ~/.jelly-pet/state.json
 2. Read the pets data to get all ASCII art for the user's species:
 ```bash
 node -e "
-const { loadPets } = require('/Users/ga/work/jelly-pet/lib/display');
-const { loadState } = require('/Users/ga/work/jelly-pet/lib/state');
-const { getEvolutionProgress } = require('/Users/ga/work/jelly-pet/lib/jelly');
+const { loadPets } = require('$PLUGIN_DIR/lib/display');
+const { loadState } = require('$PLUGIN_DIR/lib/state');
+const { getEvolutionProgress } = require('$PLUGIN_DIR/lib/jelly');
 const state = loadState();
 const pets = loadPets();
 const species = pets.species[state.pet];
@@ -32,15 +31,15 @@ console.log(JSON.stringify({ state, species, evo, egg: pets.shared.egg }, null, 
 
 ```
 🥚 Egg (0) → 🐣 Baby (100) → 🦊 Pro (500) → 🐉 Master (2K) → ✨ Legend (10K)
-     ^current
+                                  ^current
 
-Your pet: [species name]
+Your pet: [name] the [species]
 Jelly: [current] / [next threshold]
 Progress: [bar] [percent]%
 [jelly needed] jelly until [next stage]!
 ```
 
-4. Show ASCII art for each stage side by side, highlighting the current stage.
+4. Show ASCII art for each stage, highlighting the current stage with color.
 
 5. For each stage, show:
    - Stage name and jelly threshold

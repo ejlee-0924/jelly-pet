@@ -1,0 +1,12 @@
+{
+  "name": "jelly-pet",
+  "description": "Virtual pet companion for Claude Code — grows with your coding sessions. Earn jelly from tokens, evolve through 5 stages, choose from 5 pet species.",
+  "version": "0.1.0",
+  "author": {
+    "name": "ejlee-0924",
+    "url": "https://github.com/ejlee-0924"
+  },
+  "homepage": "https://github.com/ejlee-0924/jelly-pet",
+  "repository": "https://github.com/ejlee-0924/jelly-pet",
+  "license": "MIT"
+}

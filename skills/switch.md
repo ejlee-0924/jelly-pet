@@ -1,11 +1,10 @@
 ---
-name: switch
-description: Switch pet species and optionally set a name — jelly and level are preserved
+description: Switch pet species and set a name — jelly and level are preserved
 ---
 
 # Switch Pet Species
 
-Change the user's pet to a different species. Jelly, level, streak, and pet name are all preserved.
+Change the user's pet to a different species. Jelly, level, streak, and progress are all preserved.
 
 ## Available Species
 - cat (고양이)
@@ -25,7 +24,7 @@ Change the user's pet to a different species. Jelly, level, streak, and pet name
 3. Once they choose, update the state:
 ```bash
 node -e "
-const { loadState, saveState } = require('/Users/ga/work/jelly-pet/lib/state');
+const { loadState, saveState } = require('$PLUGIN_DIR/lib/state');
 const state = loadState();
 state.pet = 'CHOSEN_SPECIES';
 state.petName = 'CHOSEN_NAME';
@@ -37,7 +36,7 @@ Replace CHOSEN_SPECIES and CHOSEN_NAME with user's selections. If they skip the 
 
 4. Show the new pet's ASCII art by running:
 ```bash
-node /Users/ga/work/jelly-pet/hooks/session-start.js
+node "$PLUGIN_DIR/hooks/session-start.js"
 ```
 
 5. Confirm: "펫을 [species]([name])로 변경했어요! 젤리와 레벨은 그대로예요."
