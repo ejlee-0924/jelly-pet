@@ -15,7 +15,7 @@ function main() {
   // First run — no pet selected yet
   if (!state.pet) {
     console.log("\n  🍬 Jelly Pet에 오신 걸 환영해요!");
-    console.log("  /jelly-pet:switch 명령으로 펫을 선택해주세요.");
+    console.log("  /jelly-pet:switch 명령으로 펫을 선택하고 이름을 지어주세요.");
     console.log("  선택 가능: cat, dog, hamster, rabbit, hedgehog\n");
     return;
   }
