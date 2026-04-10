@@ -70,7 +70,31 @@ Code every day for bonus jelly:
 
 ## Installation
 
-Coming soon to Claude Code Plugin Marketplace.
+### Plugin (Recommended)
+
+```bash
+# 1. Add marketplace
+/plugin marketplace add https://github.com/ejlee-0924/jelly-pet
+
+# 2. Install
+/plugin install jelly-pet
+
+# 3. Restart Claude Code, then pick your pet
+/jelly-pet:switch
+```
+
+### Manual
+
+```bash
+# 1. Clone
+! git clone https://github.com/ejlee-0924/jelly-pet.git ~/.jelly-pet-plugin
+
+# 2. Ask Claude Code to connect hooks
+# Just say: "jelly-pet hooks를 settings.json에 연결해줘"
+
+# 3. Restart and pick your pet
+/jelly-pet:switch
+```
 
 ## License
 

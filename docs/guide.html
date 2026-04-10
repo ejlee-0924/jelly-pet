@@ -463,17 +463,23 @@ body::before {
 
       <ol class="step-list">
         <li>
-          <strong>Claude Code에서 설치</strong>
+          <strong>마켓플레이스 등록</strong>
           Claude Code를 열고 아래 명령어를 입력하세요:<br>
-          <code>/install jelly-pet</code><br><br>
-          <span style="color:var(--text-dim);">자동으로 다운로드 + hooks 연결 + 설정까지 한 번에!</span>
+          <code>/plugin marketplace add https://github.com/ejlee-0924/jelly-pet</code><br><br>
+          <span style="color:var(--text-dim);">이 명령은 한 번만 하면 돼요. jelly-pet을 찾을 수 있는 장소를 등록하는 거예요.</span>
           <div class="callout" style="margin-top:8px;">
-            <strong>/install이 뭐예요?</strong> Claude Code의 플러그인 설치 명령어예요. 마켓플레이스에서 플러그인을 찾아서 자동 설치해줍니다.
+            <strong>마켓플레이스가 뭐예요?</strong> 플러그인을 모아놓은 "앱스토어" 같은 거예요. 한 번 등록하면 그 안의 플러그인을 자유롭게 설치할 수 있어요.
           </div>
         </li>
         <li>
+          <strong>플러그인 설치</strong>
+          마켓플레이스 등록 후 설치 명령어를 입력하세요:<br>
+          <code>/plugin install jelly-pet</code><br><br>
+          <span style="color:var(--text-dim);">자동으로 다운로드 + hooks 연결 + 스킬 등록까지 한 번에!</span>
+        </li>
+        <li>
           <strong>펫 선택하고 이름 짓기</strong>
-          설치 후 Claude Code를 재시작하면 환영 메시지가 나와요!<br>
+          Claude Code를 재시작하면 환영 메시지가 나와요!<br>
           <code>/jelly-pet:switch</code> 명령으로 펫을 고르고 이름을 지어주세요.<br><br>
           <span style="color:var(--text-dim);">선택 가능: 🐱고양이 🐶강아지 🐹햄스터 🐰토끼 🦔고슴도치</span>
         </li>
