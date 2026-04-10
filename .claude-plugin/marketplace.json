@@ -11,7 +11,10 @@
   "plugins": [
     {
       "name": "jelly-pet",
-      "source": ".",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/ejlee-0924/jelly-pet.git"
+      },
       "description": "Virtual pet companion for Claude Code — earn jelly from tokens, evolve through 5 stages, choose from 5 pet species.",
       "version": "0.1.0"
     }
