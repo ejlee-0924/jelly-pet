@@ -1,4 +1,5 @@
 ---
+name: status
 description: Check your jelly pet's current status — species, jelly count, level, evolution progress, and streak bonus
 ---
 

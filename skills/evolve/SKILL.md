@@ -1,4 +1,5 @@
 ---
+name: evolve
 description: Show your pet's full evolution tree and progress to next stage
 ---
 
@@ -30,7 +31,7 @@ console.log(JSON.stringify({ state, species, evo, egg: pets.shared.egg }, null, 
 3. Present the evolution tree visually:
 
 ```
-🥚 Egg (0) → 🐣 Baby (100) → 🦊 Pro (500) → 🐉 Master (2K) → ✨ Legend (10K)
+Egg (0) -> Baby (100) -> Pro (500) -> Master (2K) -> Legend (10K)
                                   ^current
 
 Your pet: [name] the [species]

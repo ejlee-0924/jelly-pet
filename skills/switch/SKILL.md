@@ -1,4 +1,5 @@
 ---
+name: switch
 description: Switch pet species and set a name — jelly and level are preserved
 ---
 

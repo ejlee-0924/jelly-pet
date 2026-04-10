@@ -1,4 +1,5 @@
 ---
+name: rename
 description: Give your jelly pet a new name
 ---
 
