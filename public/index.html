@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jelly Pet — Claude Code 펫 키우기 가이드</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #1a1625;
+  --bg-card: #231e30;
+  --bg-terminal: #0f0b18;
+  --candy-orange: #ff9f43;
+  --candy-pink: #ff6b9d;
+  --candy-purple: #c56cf0;
+  --candy-blue: #58b4ff;
+  --candy-green: #6bdb8a;
+  --candy-gold: #ffd700;
+  --candy-red: #ff6b6b;
+  --text: #e8e0f0;
+  --text-dim: #8b7fa8;
+  --text-muted: #5a4f6f;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── Candy background ── */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 10% 20%, #ff9f4310 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 85% 15%, #c56cf010 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 50% 80%, #ff6b9d08 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+.container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ── Hero ── */
+.hero {
+  text-align: center; padding: 80px 0 48px;
+  animation: fadeIn 0.8s ease-out;
+}
+.hero-candy {
+  font-size: 64px; margin-bottom: 16px;
+  animation: bounce 2s ease-in-out infinite;
+}
+.hero h1 {
+  font-family: 'Gaegu', cursive; font-size: 52px; font-weight: 700;
+  background: linear-gradient(135deg, var(--candy-orange), var(--candy-pink), var(--candy-purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1.2; margin-bottom: 12px;
+}
+.hero p {
+  font-size: 18px; color: var(--text-dim); max-width: 500px; margin: 0 auto;
+  font-family: 'Gaegu', cursive; font-size: 22px;
+}
+
+/* ── Section ── */
+.section {
+  margin-bottom: 56px;
+  animation: slideUp 0.6s ease-out both;
+}
+.section:nth-child(2) { animation-delay: 0.1s; }
+.section:nth-child(3) { animation-delay: 0.2s; }
+.section:nth-child(4) { animation-delay: 0.3s; }
+.section:nth-child(5) { animation-delay: 0.4s; }
+
+.section-label {
+  display: inline-block; font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--candy-purple);
+  margin-bottom: 12px; font-weight: 600;
+}
+.section h2 {
+  font-family: 'Gaegu', cursive; font-size: 32px; font-weight: 700;
+  color: var(--text); margin-bottom: 16px;
+}
+.section p, .section li {
+  font-size: 15px; color: var(--text-dim); line-height: 1.8;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid #2d2640;
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+  transition: border-color 0.3s;
+}
+.card:hover { border-color: #4a3d66; }
+
+/* ── How it works flow ── */
+.flow {
+  display: flex; flex-direction: column; gap: 0; align-items: center;
+}
+.flow-step {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--bg-card); border: 1px solid #2d2640;
+  border-radius: var(--radius-sm); padding: 16px 24px;
+  width: 100%; max-width: 540px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.flow-step:hover { transform: translateX(4px); border-color: var(--candy-orange); }
+.flow-icon { font-size: 28px; flex-shrink: 0; width: 40px; text-align: center; }
+.flow-text { flex: 1; }
+.flow-text strong { color: var(--text); display: block; font-size: 14px; margin-bottom: 2px; }
+.flow-text span { color: var(--text-dim); font-size: 13px; }
+.flow-arrow {
+  font-size: 20px; color: var(--text-muted); padding: 4px 0;
+  animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+/* ── Pet selector demo ── */
+.pet-selector {
+  display: flex; gap: 12px; justify-content: center;
+  flex-wrap: wrap; margin: 20px 0;
+}
+.pet-btn {
+  padding: 10px 20px; border: 2px solid #2d2640;
+  border-radius: 40px; background: var(--bg);
+  color: var(--text-dim); cursor: pointer;
+  font-family: 'Gaegu', cursive; font-size: 18px;
+  transition: all 0.25s;
+}
+.pet-btn:hover { border-color: var(--candy-orange); color: var(--text); transform: scale(1.05); }
+.pet-btn.active {
+  border-color: var(--candy-orange); color: var(--candy-orange);
+  background: #ff9f4315; transform: scale(1.05);
+}
+
+/* ── Evolution demo ── */
+.evo-demo {
+  display: flex; gap: 0; justify-content: space-around; align-items: flex-end;
+  padding: 20px 0; overflow-x: auto;
+}
+.evo-item {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 100px; position: relative;
+}
+.evo-item:not(:last-child)::after {
+  content: '→'; position: absolute; right: -16px; top: 36px;
+  color: var(--text-muted); font-size: 16px;
+}
+.evo-art {
+  white-space: pre; font-size: 12px; line-height: 1.3;
+  color: var(--candy-orange); text-align: center;
+  padding: 10px; background: var(--bg); border-radius: 8px;
+  border: 1px solid #2d2640; min-height: 72px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s;
+}
+.evo-item:hover .evo-art { border-color: var(--candy-orange); transform: translateY(-4px); }
+.evo-name { font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+.evo-jelly { font-size: 10px; color: var(--text-muted); }
+.evo-master .evo-art { color: var(--candy-red); border-color: #ff6b6b33; }
+.evo-legend .evo-art {
+  color: var(--candy-gold); border-color: #ffd70033;
+  animation: legendGlow 2s ease-in-out infinite alternate;
+}
+
+/* ── Terminal mockup ── */
+.terminal {
+  background: var(--bg-terminal); border: 1px solid #2d2640;
+  border-radius: var(--radius); overflow: hidden; margin: 16px 0;
+}
+.terminal-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px; background: #16121f; border-bottom: 1px solid #2d2640;
+}
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot-r { background: #ff5f56; }
+.terminal-dot-y { background: #ffbd2e; }
+.terminal-dot-g { background: #27c93f; }
+.terminal-title { flex: 1; text-align: center; font-size: 11px; color: var(--text-muted); }
+.terminal-body { padding: 16px 18px; font-size: 13px; line-height: 1.7; }
+.terminal-body .cmd { color: var(--candy-green); }
+.terminal-body .comment { color: var(--text-muted); }
+.terminal-body .highlight { color: var(--candy-orange); }
+.terminal-body .path { color: var(--candy-blue); }
+.terminal-body .pet-display { color: var(--candy-orange); white-space: pre; line-height: 1.3; }
+.terminal-body .greeting { color: var(--candy-pink); }
+
+/* ── Steps ── */
+.step-list { list-style: none; counter-reset: steps; }
+.step-list li {
+  counter-increment: steps; padding: 20px 20px 20px 64px;
+  position: relative; margin-bottom: 8px;
+  background: var(--bg-card); border: 1px solid #2d2640;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.2s;
+}
+.step-list li:hover { border-color: var(--candy-purple); }
+.step-list li::before {
+  content: counter(steps);
+  position: absolute; left: 20px; top: 20px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--candy-purple), var(--candy-pink));
+  color: #fff; font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-list li strong { color: var(--text); display: block; margin-bottom: 4px; }
+.step-list li code {
+  display: inline-block; background: var(--bg); border: 1px solid #2d2640;
+  border-radius: 4px; padding: 2px 8px; font-size: 13px;
+  color: var(--candy-green); margin-top: 4px;
+}
+
+/* ── Callout ── */
+.callout {
+  background: linear-gradient(135deg, #ff9f4308, #c56cf008);
+  border: 1px solid #ff9f4322; border-radius: var(--radius-sm);
+  padding: 16px 20px; margin: 16px 0;
+  font-size: 14px; color: var(--text-dim);
+}
+.callout strong { color: var(--candy-orange); }
+
+/* ── FAQ ── */
+.faq-item { margin-bottom: 12px; }
+.faq-q {
+  font-family: 'Gaegu', cursive; font-size: 20px; color: var(--text);
+  margin-bottom: 4px;
+}
+.faq-a { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+
+/* ── Footer ── */
+.footer {
+  text-align: center; padding: 48px 0 40px;
+  border-top: 1px solid #2d2640; margin-top: 40px;
+}
+.footer a { color: var(--candy-purple); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+.footer p { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+
+/* ── Animations ── */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes arrowPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes legendGlow { 0% { box-shadow: 0 0 0 rgba(255,215,0,0); } 100% { box-shadow: 0 0 16px rgba(255,215,0,0.15); } }
+@keyframes petBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 36px; }
+  .hero p { font-size: 18px; }
+  .evo-demo { gap: 4px; }
+  .evo-item { min-width: 70px; }
+  .evo-art { font-size: 10px; padding: 6px; }
+  .flow-step { padding: 12px 16px; }
+  .container { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-candy">🍬</div>
+    <h1>Jelly Pet</h1>
+    <p>Claude Code에서 코딩하면 젤리가 쌓이고, 내 펫이 자라나요</p>
+  </div>
+
+  <!-- What is it -->
+  <div class="section">
+    <div class="section-label">이게 뭐야?</div>
+    <h2>코딩할수록 자라나는 내 펫</h2>
+    <p>
+      Jelly Pet은 Claude Code에서 사용하는 <strong style="color:var(--candy-orange)">플러그인</strong>이에요.<br>
+      Claude Code로 코딩하면 사용한 만큼 <strong style="color:var(--candy-orange)">젤리</strong>가 쌓이고,<br>
+      내 펫이 점점 자라서 진화해요!
+    </p>
+
+    <div class="callout">
+      <strong>Claude Code가 뭐예요?</strong><br>
+      Anthropic이 만든 AI 코딩 도구예요. 터미널(까만 화면)에서 AI와 대화하면서 코드를 작성하거나 업무를 처리할 수 있어요. 개발자가 아니어도 쓸 수 있습니다!
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="section">
+    <div class="section-label">어떻게 동작해?</div>
+    <h2>코딩 → 젤리 → 진화</h2>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-icon">💻</div>
+        <div class="flow-text">
+          <strong>Claude Code로 작업</strong>
+          <span>평소처럼 코딩하거나 AI와 대화하세요</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon">🔢</div>
+        <div class="flow-text">
+          <strong>토큰이 자동으로 측정돼요</strong>
+          <span>AI가 답변할 때 사용한 토큰(글자 양)을 세요</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon">🍬</div>
+        <div class="flow-text">
+          <strong>토큰 500개 = 젤리 1개</strong>
+          <span>세션이 끝나면 젤리로 자동 변환!</span>
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <div class="flow-icon">🐣</div>
+        <div class="flow-text">
+          <strong>펫이 젤리를 먹고 자라요</strong>
+          <span>젤리가 쌓이면 다음 단계로 진화!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evolution -->
+  <div class="section">
+    <div class="section-label">진화 단계</div>
+    <h2>알에서 전설까지</h2>
+
+    <div class="card">
+      <!-- Pet selector -->
+      <p style="text-align:center;margin-bottom:12px;color:var(--text-dim);font-size:13px;">펫을 눌러보세요!</p>
+      <div class="pet-selector">
+        <button class="pet-btn active" onclick="selectPet('cat')">🐱 고양이</button>
+        <button class="pet-btn" onclick="selectPet('dog')">🐶 강아지</button>
+        <button class="pet-btn" onclick="selectPet('hamster')">🐹 햄스터</button>
+        <button class="pet-btn" onclick="selectPet('rabbit')">🐰 토끼</button>
+        <button class="pet-btn" onclick="selectPet('hedgehog')">🦔 고슴도치</button>
+      </div>
+
+      <div class="evo-demo" id="evo-demo"></div>
+
+      <div style="text-align:center;margin-top:16px;">
+        <table style="margin:0 auto;border-collapse:collapse;font-size:13px;">
+          <tr style="color:var(--text-muted);font-size:11px;">
+            <th style="padding:4px 16px;text-align:left;">단계</th>
+            <th style="padding:4px 16px;">필요 젤리</th>
+            <th style="padding:4px 16px;">대략 걸리는 시간</th>
+          </tr>
+          <tr><td style="padding:4px 16px;">🥚 Egg</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">0</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">시작!</td></tr>
+          <tr><td style="padding:4px 16px;">🐣 Baby</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">100</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">~1주</td></tr>
+          <tr><td style="padding:4px 16px;">🦊 Pro</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">500</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">~1달</td></tr>
+          <tr><td style="padding:4px 16px;color:var(--candy-red);">🐉 Master</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">2,000</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">~3-4달</td></tr>
+          <tr><td style="padding:4px 16px;color:var(--candy-gold);">✨ Legend</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">10,000</td><td style="padding:4px 16px;text-align:center;color:var(--text-dim);">1년+</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>매일 접속하면 보너스!</strong><br>
+      4일 연속 → 젤리 1.5배 / 8일 연속 → 젤리 2배! 꾸준히 하면 더 빨리 진화해요.
+    </div>
+  </div>
+
+  <!-- What you'll see -->
+  <div class="section">
+    <div class="section-label">이렇게 보여요</div>
+    <h2>세션 시작하면</h2>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot terminal-dot-r"></div>
+        <div class="terminal-dot terminal-dot-y"></div>
+        <div class="terminal-dot terminal-dot-g"></div>
+        <div class="terminal-title">Claude Code</div>
+      </div>
+      <div class="terminal-body">
+        <div class="pet-display" style="animation: petBounce 2s ease-in-out infinite;">  /\ /\
+ ( o.o )
+  > ^ <
+  '---'</div>
+        <br>
+        <span class="greeting">  <strong>초코</strong> "냐옹~ 젤리 줘!"</span><br><br>
+        <span class="comment">  🍬 247  Lv.5 🐱 초코 Baby  🔥 3일</span><br>
+        <span class="comment">  진화 ██████░░░░░░ 37%  → Pro까지 253 젤리</span>
+      </div>
+    </div>
+
+    <h2 style="margin-top:32px;">세션 끝나면</h2>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot terminal-dot-r"></div>
+        <div class="terminal-dot terminal-dot-y"></div>
+        <div class="terminal-dot terminal-dot-g"></div>
+        <div class="terminal-title">Claude Code</div>
+      </div>
+      <div class="terminal-body">
+        <span class="path">📋 세션 종료 리포트</span><br>
+        <span class="comment">────────────────────────────────</span><br>
+        <span class="comment">  이번 세션    </span><span class="highlight">+35 🍬</span><br>
+        <span class="comment">  누적 젤리    </span><span class="highlight">282 / 500</span><br>
+        <span class="comment">  연속 접속    🔥 3일</span><br>
+        <span class="comment">  진화 진행    ███████████░░░░ 56%</span><br>
+        <span class="comment">────────────────────────────────</span>
+      </div>
+    </div>
+
+    <h2 style="margin-top:32px;">상태줄 (항상 보여요)</h2>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot terminal-dot-r"></div>
+        <div class="terminal-dot terminal-dot-y"></div>
+        <div class="terminal-dot terminal-dot-g"></div>
+        <div class="terminal-title">하단 상태줄</div>
+      </div>
+      <div class="terminal-body" style="padding:10px 16px;">
+        <div style="display:flex;gap:20px;align-items:center;">
+          <div class="pet-display" style="font-size:12px;animation: petBounce 2.5s ease-in-out infinite;"> /\_/\
+(=^.^=)
+ )   ( ~
+(_____)</div>
+          <div style="font-size:12px;line-height:1.6;">
+            <span class="path">Opus 4.6</span>  <span style="color:var(--candy-green);">████████████</span><span style="color:var(--text-muted);">░░░░</span> 72%<br>
+            <span class="highlight">🍬 1,420</span>  Lv.9 🦊 초코 Pro<br>
+            진화 <span class="highlight">████████████</span><span style="color:var(--text-muted);">░░░░</span> 61%  <span style="color:var(--candy-orange);">🔥7일 x1.5</span><br>
+            <span class="comment">→ Master까지 580 젤리</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Installation -->
+  <div class="section">
+    <div class="section-label">설치 방법</div>
+    <h2>2가지 방법이 있어요</h2>
+
+    <!-- Install method tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="pet-btn active" onclick="showInstall('plugin')" id="install-tab-plugin" style="flex:1;text-align:center;">
+        ✨ 플러그인 설치 (추천)
+      </button>
+      <button class="pet-btn" onclick="showInstall('manual')" id="install-tab-manual" style="flex:1;text-align:center;">
+        🔧 수동 설치
+      </button>
+    </div>
+
+    <!-- Plugin install -->
+    <div id="install-plugin">
+      <div class="callout" style="border-color:var(--candy-green);background:linear-gradient(135deg, #6bdb8a08, #58b4ff08);">
+        <strong style="color:var(--candy-green);">가장 쉬운 방법!</strong> 명령어 하나면 설치 완료.
+      </div>
+
+      <ol class="step-list">
+        <li>
+          <strong>마켓플레이스 등록</strong>
+          Claude Code를 열고 아래 명령어를 입력하세요:<br>
+          <code>/plugin marketplace add https://github.com/ejlee-0924/jelly-pet</code><br><br>
+          <span style="color:var(--text-dim);">이 명령은 한 번만 하면 돼요. jelly-pet을 찾을 수 있는 장소를 등록하는 거예요.</span>
+          <div class="callout" style="margin-top:8px;">
+            <strong>마켓플레이스가 뭐예요?</strong> 플러그인을 모아놓은 "앱스토어" 같은 거예요. 한 번 등록하면 그 안의 플러그인을 자유롭게 설치할 수 있어요.
+          </div>
+        </li>
+        <li>
+          <strong>플러그인 설치</strong>
+          마켓플레이스 등록 후 설치 명령어를 입력하세요:<br>
+          <code>/plugin install jelly-pet</code><br><br>
+          <span style="color:var(--text-dim);">자동으로 다운로드 + hooks 연결 + 스킬 등록까지 한 번에!</span>
+        </li>
+        <li>
+          <strong>펫 선택하고 이름 짓기</strong>
+          Claude Code를 재시작하면 환영 메시지가 나와요!<br>
+          <code>/jelly-pet:switch</code> 명령으로 펫을 고르고 이름을 지어주세요.<br><br>
+          <span style="color:var(--text-dim);">선택 가능: 🐱고양이 🐶강아지 🐹햄스터 🐰토끼 🦔고슴도치</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Manual install -->
+    <div id="install-manual" style="display:none;">
+      <div class="callout">
+        <strong>플러그인 설치가 안 될 때</strong> 또는 직접 코드를 보면서 설치하고 싶을 때 이 방법을 쓰세요.
+      </div>
+
+      <ol class="step-list">
+        <li>
+          <strong>프로젝트 다운로드</strong>
+          Claude Code 터미널에서 아래 명령어를 입력하세요:<br>
+          <code>! git clone https://github.com/ejlee-0924/jelly-pet.git ~/.jelly-pet-plugin</code>
+          <div class="callout" style="margin-top:8px;">
+            <strong>! 가 뭐예요?</strong> Claude Code에서 터미널 명령어를 직접 실행하는 방법이에요. 앞에 ! 를 붙이면 됩니다.
+          </div>
+        </li>
+        <li>
+          <strong>hooks 연결하기</strong>
+          Claude Code 설정 파일에 jelly-pet hooks를 추가해야 해요.<br>
+          가장 쉬운 방법: Claude Code에서 이렇게 말하세요:<br><br>
+          <code>jelly-pet hooks를 settings.json에 연결해줘</code><br><br>
+          <span style="color:var(--text-dim);">AI가 알아서 설정 파일을 수정해줘요!</span><br><br>
+          직접 하고 싶다면 <code>! open ~/.claude/settings.json</code> 으로 열고<br>
+          hooks에 아래를 추가하세요:<br>
+          <div class="terminal" style="margin:8px 0;">
+            <div class="terminal-body" style="font-size:12px;line-height:1.6;">
+              <span class="comment">// SessionStart에 추가</span><br>
+              <span class="highlight">"command"</span>: <span class="cmd">"node ~/.jelly-pet-plugin/hooks/session-start.js"</span><br><br>
+              <span class="comment">// SessionEnd에 추가</span><br>
+              <span class="highlight">"command"</span>: <span class="cmd">"node ~/.jelly-pet-plugin/hooks/session-end.js"</span><br><br>
+              <span class="comment">// statusLine 변경</span><br>
+              <span class="highlight">"command"</span>: <span class="cmd">"node ~/.jelly-pet-plugin/lib/statusline.js"</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <strong>펫 선택하고 이름 짓기</strong>
+          Claude Code를 재시작하면 환영 메시지가 나와요!<br>
+          <code>/jelly-pet:switch</code> 명령으로 펫을 고르고 이름을 지어주세요.<br><br>
+          <span style="color:var(--text-dim);">선택 가능: 🐱고양이 🐶강아지 🐹햄스터 🐰토끼 🦔고슴도치</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Commands -->
+  <div class="section">
+    <div class="section-label">명령어</div>
+    <h2>사용할 수 있는 명령어</h2>
+
+    <div class="card">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr style="border-bottom:1px solid #2d2640;">
+          <td style="padding:12px 8px;"><code style="color:var(--candy-green);background:var(--bg);padding:4px 10px;border-radius:4px;">/jelly-pet:status</code></td>
+          <td style="padding:12px 8px;color:var(--text-dim);">현재 펫 상태 보기</td>
+        </tr>
+        <tr style="border-bottom:1px solid #2d2640;">
+          <td style="padding:12px 8px;"><code style="color:var(--candy-green);background:var(--bg);padding:4px 10px;border-radius:4px;">/jelly-pet:switch</code></td>
+          <td style="padding:12px 8px;color:var(--text-dim);">다른 펫으로 변경 + 이름 설정</td>
+        </tr>
+        <tr style="border-bottom:1px solid #2d2640;">
+          <td style="padding:12px 8px;"><code style="color:var(--candy-green);background:var(--bg);padding:4px 10px;border-radius:4px;">/jelly-pet:rename</code></td>
+          <td style="padding:12px 8px;color:var(--text-dim);">펫 이름 바꾸기</td>
+        </tr>
+        <tr>
+          <td style="padding:12px 8px;"><code style="color:var(--candy-green);background:var(--bg);padding:4px 10px;border-radius:4px;">/jelly-pet:evolve</code></td>
+          <td style="padding:12px 8px;color:var(--text-dim);">진화 트리 + 진행 상황 보기</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <div class="section-label">자주 묻는 질문</div>
+    <h2>궁금한 거 있죠?</h2>
+
+    <div class="card">
+      <div class="faq-item">
+        <div class="faq-q">Q. 펫을 바꾸면 젤리 사라져요?</div>
+        <div class="faq-a">아뇨! 젤리, 레벨, 진화 단계 전부 유지됩니다. 겉모습(ASCII 아트)만 바뀌어요.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q. 하루에 여러 세션 하면 젤리 더 많이 모여요?</div>
+        <div class="faq-a">네! 세션마다 젤리가 쌓여요. 많이 쓸수록 빠르게 진화합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q. 며칠 안 하면 펫이 죽어요?</div>
+        <div class="faq-a">죽지 않아요! 다만 연속 접속 보너스(스트릭)가 1일로 리셋됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q. 개발자가 아닌데 써도 돼요?</div>
+        <div class="faq-a">물론이요! Claude Code 자체가 비개발자도 쓸 수 있어요. 코딩 외에도 문서 작성, 기획 등 다양한 작업에 사용하면 젤리가 쌓입니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q. 데이터가 어딘가로 전송되나요?</div>
+        <div class="faq-a">아뇨. 모든 데이터는 내 컴퓨터(~/.jelly-pet/)에만 저장돼요. 외부 서버 연결 없습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <a href="https://github.com/ejlee-0924/jelly-pet" target="_blank" style="font-family:'Gaegu',cursive;font-size:24px;">GitHub에서 보기 →</a>
+    <p>Made with 🍬 by ejlee-0924</p>
+  </div>
+
+</div>
+
+<script>
+const petData = {
+  cat: {
+    stages: {
+      egg:    { art: "  .--.\n ( .. )\n ( -- )\n  '--'" },
+      baby:   { art: "  /\\ /\\\n ( o.o )\n  > ^ <\n  '---'" },
+      pro:    { art: " /\\_/\\\n(=^.^=)\n )   ( ~\n(_____)" },
+      master: { art: " /\\=/\\\n(=◆.◆=)\n )   ( ~\n(_____)" },
+      legend: { art: "*/\\=/\\*\n(=★.★=)\n*)   (*~\n*_____*" }
+    }
+  },
+  dog: {
+    stages: {
+      egg:    { art: "  .--.\n ( .. )\n ( -- )\n  '--'" },
+      baby:   { art: "   /\\  \n ( o.o)__\n  /    \\|\n  '----'" },
+      pro:    { art: " __/ \\__\n(= o.o =)\n  \\ ~ / ~\n  (___)" },
+      master: { art: " _\\/ \\/_\n(= ◆.◆ =)\n  \\ ~ / ~\n  (___)" },
+      legend: { art: "*_\\/ \\/_*\n(= ★.★ =)\n * ~ * ~\n *(___)*" }
+    }
+  },
+  hamster: {
+    stages: {
+      egg:    { art: "  .--.\n ( .. )\n ( -- )\n  '--'" },
+      baby:   { art: "  .~~.\n (o.o )\n ( >> )\n  '~~'" },
+      pro:    { art: "  .~~.\n (^.^ ))\n ( >> )\n  '~~'" },
+      master: { art: "  .~~.\n (◆.◆ ))\n ( >> )\n  '~~'" },
+      legend: { art: " *.~~.*\n (★.★ ))\n (* > *)\n  *~~*" }
+    }
+  },
+  rabbit: {
+    stages: {
+      egg:    { art: "  .--.\n ( .. )\n ( -- )\n  '--'" },
+      baby:   { art: " (\\ /)\n ( o.o)\n  c(\" )\n   ||" },
+      pro:    { art: " (\\  /)\n ( ^.^)\n o(\" )o\n   ||" },
+      master: { art: " (\\= /)\n ( ◆.◆)\n o(\" )o\n   ||" },
+      legend: { art: "*(\\= /)*\n ( ★.★)\n *(\" )*\n  *||*" }
+    }
+  },
+  hedgehog: {
+    stages: {
+      egg:    { art: "  .--.\n ( .. )\n ( -- )\n  '--'" },
+      baby:   { art: " /\\/\\/\\\n( o.o  )\n \\ -- /\n  '--'" },
+      pro:    { art: " /\\/\\/\\\n( ^.^  )\n \\=  =/\n  '=--'" },
+      master: { art: " /\\/\\/\\\n( ◆.◆  )\n \\=  =/\n  '=--'" },
+      legend: { art: "*/\\/\\/\\*\n( ★.★  )\n *=  =*\n *'=--'*" }
+    }
+  }
+};
+
+const stageOrder = ['egg', 'baby', 'pro', 'master', 'legend'];
+const stageNames = { egg: '🥚 Egg', baby: '🐣 Baby', pro: '🦊 Pro', master: '🐉 Master', legend: '✨ Legend' };
+const stageJelly = { egg: '0', baby: '100', pro: '500', master: '2K', legend: '10K' };
+
+function selectPet(species) {
+  document.querySelectorAll('.pet-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderEvo(species);
+}
+
+function renderEvo(species) {
+  const container = document.getElementById('evo-demo');
+  container.innerHTML = '';
+  stageOrder.forEach(stage => {
+    const data = petData[species].stages[stage];
+    const extraClass = stage === 'master' ? ' evo-master' : stage === 'legend' ? ' evo-legend' : '';
+    container.innerHTML += `
+      <div class="evo-item${extraClass}">
+        <div class="evo-art">${data.art}</div>
+        <div class="evo-name">${stageNames[stage]}</div>
+        <div class="evo-jelly">🍬 ${stageJelly[stage]}</div>
+      </div>`;
+  });
+}
+
+renderEvo('cat');
+
+function showInstall(method) {
+  document.getElementById('install-plugin').style.display = method === 'plugin' ? 'block' : 'none';
+  document.getElementById('install-manual').style.display = method === 'manual' ? 'block' : 'none';
+  document.getElementById('install-tab-plugin').classList.toggle('active', method === 'plugin');
+  document.getElementById('install-tab-manual').classList.toggle('active', method === 'manual');
+}
+</script>
+</body>
+</html>
