@@ -1,17 +1,19 @@
 {
-  "version": "1",
+  "name": "jelly-pet",
+  "owner": {
+    "name": "ejlee-0924",
+    "url": "https://github.com/ejlee-0924"
+  },
+  "metadata": {
+    "description": "Virtual pet companion for Claude Code",
+    "version": "0.1.0"
+  },
   "plugins": [
     {
       "name": "jelly-pet",
-      "description": "Virtual pet companion for Claude Code — grows with your coding sessions. Earn jelly from tokens, evolve through 5 stages, choose from 5 pet species.",
-      "version": "0.1.0",
-      "location": {
-        "type": "git",
-        "url": "https://github.com/ejlee-0924/jelly-pet.git"
-      },
-      "author": {
-        "name": "ejlee-0924"
-      }
+      "source": ".",
+      "description": "Virtual pet companion for Claude Code — earn jelly from tokens, evolve through 5 stages, choose from 5 pet species.",
+      "version": "0.1.0"
     }
   ]
 }
